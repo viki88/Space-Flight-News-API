@@ -12,6 +12,8 @@ androidHilt = "2.51.1"
 mockk = "1.13.17"
 retrofit = "2.11.0"
 auth0 = "3.4.0"
+navigationCompose = "2.8.8"
+storage = "1.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +36,8 @@ converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi" ,
 auth0 = { group = "com.auth0.android" , name = "auth0" , version.ref = "auth0" }
 hilt-compiler = { group = "com.google.dagger" , name = "hilt-compiler" , version.ref = "androidHilt" }
 hilt-android = { group = "com.google.dagger" , name = "hilt-android" , version.ref = "androidHilt" }
+compose-navigation = { group = "androidx.navigation", name = "navigation-compose" , version.ref = "navigationCompose" }
+androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
