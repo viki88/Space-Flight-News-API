@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SpaceFlightNewsApp</string>
+    <string name="com_auth0_client_id">9YInZmfJJA2GMhYfQzxdPf1pkOFEnAin</string>
+    <string name="com_auth0_domain">dev-ub3leimgvk0dnja2.us.auth0.com</string>
 </resources>
