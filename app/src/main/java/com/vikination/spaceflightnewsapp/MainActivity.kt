@@ -13,21 +13,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.auth0.android.Auth0
+import com.vikination.spaceflightnewsapp.ui.theme.MainNavHost
 import com.vikination.spaceflightnewsapp.ui.theme.SpaceFlightNewsAppTheme
+import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var authManager: AuthManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Auth0.getInstance(this)
         enableEdgeToEdge()
         setContent {
             SpaceFlightNewsAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    MainNavHost(
+                        authManager,
+                        Modifier.padding(innerPadding)
                     )
                 }
             }

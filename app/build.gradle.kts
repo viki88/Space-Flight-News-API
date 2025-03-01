@@ -19,7 +19,7 @@ android {
         versionName = "1.0"
 
         manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
-        manifestPlaceholders["auth0Scheme"] = "https"
+        manifestPlaceholders["auth0Scheme"] = "app"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.auth0)
     implementation(libs.hilt.android)
+    implementation(libs.compose.navigation)
+    implementation(libs.androidx.storage)
     kapt(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
