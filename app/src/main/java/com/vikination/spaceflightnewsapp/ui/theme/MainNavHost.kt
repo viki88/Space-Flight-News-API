@@ -11,7 +11,6 @@ import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
 
 @Composable
 fun MainNavHost(
-    authManager: AuthManager,
     modifier: Modifier,
     navController: NavHostController = rememberNavController(),
 ){
@@ -21,7 +20,7 @@ fun MainNavHost(
         modifier = modifier
     ){
         composable(Route.HOME.route){
-            HomeScreen(authManager, navController)
+            HomeScreen(navController)
         }
     }
 }

@@ -1,9 +1,15 @@
 package com.vikination.spaceflightnewsapp.di.modules
 
 import android.content.Context
+import androidx.work.ListenableWorker
+import androidx.work.WorkManager
+import androidx.work.WorkerFactory
+import androidx.work.WorkerParameters
 import com.auth0.android.Auth0
-import com.auth0.android.auth0.BuildConfig
 import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
+import com.vikination.spaceflightnewsapp.ui.utils.PermissionManager
+import com.vikination.spaceflightnewsapp.ui.utils.UserPrefs
+import com.vikination.spaceflightnewsapp.ui.utils.worker.ChildWorkerFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,6 +28,45 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun auth0Manager(auth0: Auth0) :AuthManager = AuthManager(auth0)
+    fun auth0Manager(
+        @ApplicationContext context: Context,
+        auth0: Auth0,
+        userPrefs: UserPrefs
+    ) :AuthManager = AuthManager(context, auth0, userPrefs)
 
+    @Provides
+    @Singleton
+    fun userPrefs(@ApplicationContext context: Context) :UserPrefs {
+        val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        return UserPrefs(prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun permissionManager(@ApplicationContext context: Context): PermissionManager =
+        PermissionManager(context)
+
+    @Provides
+    @Singleton
+    fun provideWorkerFactory(
+        workerFactories: @JvmSuppressWildcards Map<Class<out ListenableWorker>, ChildWorkerFactory>
+    ): WorkerFactory{
+        return object :WorkerFactory(){
+            override fun createWorker(
+                appContext: Context,
+                workerClassName: String,
+                workerParameters: WorkerParameters
+            ): ListenableWorker? {
+                val foundEntry = workerFactories.entries.find {
+                    Class.forName(workerClassName).isAssignableFrom(it.key)
+                }
+                return foundEntry?.value?.create(appContext, workerParameters)
+            }
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context) :WorkManager =
+        WorkManager.getInstance(context)
 }

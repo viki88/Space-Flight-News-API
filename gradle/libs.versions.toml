@@ -14,6 +14,10 @@ retrofit = "2.11.0"
 auth0 = "3.4.0"
 navigationCompose = "2.8.8"
 storage = "1.5.0"
+hiltNavigation = "1.2.0"
+workManager = "2.10.0"
+hiltCommon = "1.2.0"
+interceptor = "4.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,12 +36,16 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 mock = { group = "io.mockk" , name = "mockk", version.ref = "mockk" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi" , version.ref = "retrofit" }
+converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson" , version.ref = "retrofit" }
 auth0 = { group = "com.auth0.android" , name = "auth0" , version.ref = "auth0" }
 hilt-compiler = { group = "com.google.dagger" , name = "hilt-compiler" , version.ref = "androidHilt" }
 hilt-android = { group = "com.google.dagger" , name = "hilt-android" , version.ref = "androidHilt" }
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose" , version.ref = "navigationCompose" }
 androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
+hilt-navigation = { group = "androidx.hilt" , name = "hilt-navigation-compose", version.ref = "hiltNavigation" }
+androidx-work = { group = "androidx.work" , name = "work-runtime-ktx" , version.ref = "workManager" }
+hilt-common = { group = "androidx.hilt" , name = "hilt-common" , version.ref = "hiltCommon"}
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "interceptor"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
