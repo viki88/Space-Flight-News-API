@@ -22,6 +22,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun auth0Manager(auth0: Auth0) :AuthManager = AuthManager(auth0)
+    fun auth0Manager(
+        @ApplicationContext context: Context,
+        auth0: Auth0) :AuthManager = AuthManager(context, auth0)
 
 }
