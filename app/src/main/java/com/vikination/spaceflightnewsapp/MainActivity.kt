@@ -12,12 +12,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.auth0.android.Auth0
 import com.vikination.spaceflightnewsapp.ui.theme.MainNavHost
 import com.vikination.spaceflightnewsapp.ui.theme.SpaceFlightNewsAppTheme
-import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
 import com.vikination.spaceflightnewsapp.ui.utils.PermissionManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -25,27 +22,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var authManager: AuthManager
     @Inject lateinit var permissionManager: PermissionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!permissionManager.hasNotificationPermission())
             permissionManager.requestNotificationPermission(this)
-        val isFromLogout = intent.getBooleanExtra("FROM_LOGOUT", false)
-        if (isFromLogout) {
-            authManager.logoutInBackground(this, onSuccess = {
-                finish()
-            }, onError = {
-                finish()
-            })
-        }
         enableEdgeToEdge()
         setContent {
             SpaceFlightNewsAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainNavHost(
-                        authManager,
                         Modifier.padding(innerPadding)
                     )
                 }

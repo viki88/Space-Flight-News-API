@@ -2,6 +2,7 @@ package com.vikination.spaceflightnewsapp.di.modules
 
 import android.content.Context
 import androidx.work.ListenableWorker
+import androidx.work.WorkManager
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.auth0.android.Auth0
@@ -63,4 +64,9 @@ object AppModule {
             }
         }
     }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context) :WorkManager =
+        WorkManager.getInstance(context)
 }

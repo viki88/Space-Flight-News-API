@@ -2,7 +2,6 @@ package com.vikination.spaceflightnewsapp.ui.utils
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -11,9 +10,10 @@ import com.auth0.android.authentication.storage.SharedPreferencesStorage
 import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
-import com.vikination.spaceflightnewsapp.R
-import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
-import retrofit2.Retrofit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class AuthManager(
     private val context :Context,
@@ -39,8 +39,8 @@ class AuthManager(
                 override fun onSuccess(result: Credentials) {
                     credentialManager.saveCredentials(result)
                     tokenId = result.idToken
-                    userPrefs.saveUserLoggedIn()
-                    scheduleLogoutWorker(context)
+                    userPrefs.saveUserLoggedIn(tokenId)
+//                    scheduleLogoutWorker(context)
                     onSuccess(result)
                 }
             })
@@ -63,22 +63,15 @@ class AuthManager(
             })
     }
 
-    fun logoutInBackground(context: Context, onSuccess: () -> Unit, onError: (AuthenticationException) -> Unit){
-        WebAuthProvider
-            .logout(account)
-            .withScheme("app")
-            .start(context, object :Callback<Void?, AuthenticationException>{
-                override fun onFailure(error: AuthenticationException) {
-                    onError(error)
-                }
+    fun clearCredential() = credentialManager.clearCredentials()
 
-                override fun onSuccess(result: Void?) {
-                    userPrefs.resetUserLoggedIn()
-                    credentialManager.clearCredentials()
-                    onSuccess()
-                }
-            })
-    }
+    fun getUserInfo() :Flow<Credentials?> = flow {
+        try {
+            emit(credentialManager.awaitCredentials())
+        }catch (e :Exception){
+            emit(null)
+        }
+    }.flowOn(Dispatchers.IO)
 
     fun getTokenId() = tokenId
 

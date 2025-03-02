@@ -7,6 +7,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.auth0.android.authentication.storage.CredentialsManager
 import com.vikination.spaceflightnewsapp.R
 import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
@@ -37,14 +38,4 @@ class LogoutWorker @AssistedInject constructor(
             Result.success()
         }
     }
-}
-
-fun scheduleLogoutWorker(context: Context){
-    val workRequest = OneTimeWorkRequestBuilder<LogoutWorker>()
-        .setInitialDelay(
-            Constants.TIMER_INTERVAL_IN_MINUTES.toLong(),
-            TimeUnit.MINUTES
-        )
-        .build()
-    WorkManager.getInstance(context).enqueue(workRequest)
 }

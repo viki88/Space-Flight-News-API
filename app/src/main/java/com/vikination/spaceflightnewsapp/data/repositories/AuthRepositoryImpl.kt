@@ -1,10 +1,12 @@
 package com.vikination.spaceflightnewsapp.data.repositories
 
 import android.app.Activity
+import com.auth0.android.result.Credentials
 import com.vikination.spaceflightnewsapp.data.models.AuthResponse
 import com.vikination.spaceflightnewsapp.data.network.Auth0ApiService
 import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
 import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
+import com.vikination.spaceflightnewsapp.ui.utils.UserPrefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +18,8 @@ import kotlin.coroutines.suspendCoroutine
 
 class AuthRepositoryImpl @Inject constructor(
     private val authManager: AuthManager,
-    private val auth0ApiService: Auth0ApiService
+    private val auth0ApiService: Auth0ApiService,
+    private val userPrefs: UserPrefs
     ) :AuthRepository{
 
     override fun login(activity: Activity): Flow<AuthResponse> = flow {
@@ -56,7 +59,25 @@ class AuthRepositoryImpl @Inject constructor(
     override fun logoutInBackground(clientId :String): Flow<Boolean> = flow {
         val tokenId = authManager.getTokenId()
         val response = auth0ApiService.logout(tokenId, clientId)
-        emit(response.isSuccessful)
+        if (response.isSuccessful){
+            userPrefs.setLogoutStatus(true)
+            emit(true)
+        }else emit(false)
     }.flowOn(Dispatchers.IO)
+
+    override fun getUserInfo(): Flow<Credentials?> = authManager.getUserInfo()
+
+    override fun getIsLogoutStatus(): Flow<Boolean> = flow {
+        emit(userPrefs.getLogoutStatus())
+    }.flowOn(Dispatchers.IO)
+
+    override fun getAuthenticateStatus(): Flow<Boolean> = flow {
+        emit(userPrefs.getAuthenticateStatus())
+    }.flowOn(Dispatchers.IO)
+
+    override fun saveAuthStatus(isAuthenticate: Boolean) :Flow<Boolean> = flow{
+        userPrefs.setAuthenticateStatus(isAuthenticate)
+        emit(userPrefs.getAuthenticateStatus())
+    }
 
 }

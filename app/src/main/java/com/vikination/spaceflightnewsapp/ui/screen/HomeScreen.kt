@@ -14,26 +14,35 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.vikination.spaceflightnewsapp.data.models.AuthResponse
-import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
 import com.vikination.spaceflightnewsapp.ui.viewmodels.HomeViewModel
 
 @Composable
 fun HomeScreen(
-    authManager: AuthManager,
     navController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel()
 ){
     val activity = LocalActivity.current as Activity
     val authState = homeViewModel.authState.collectAsState()
+    val userIsLoggedIn = homeViewModel.userIsLoggedIn.collectAsState()
+    val authStatus = homeViewModel.userAuthStatus.collectAsState()
+
+    LaunchedEffect(authStatus.value, userIsLoggedIn.value) {
+        Log.i("TAG", "HomeScreen: ${authStatus.value} & ${userIsLoggedIn.value}")
+        if (authStatus.value && !userIsLoggedIn.value){
+            homeViewModel.logout(activity)
+        }
+    }
 
     when(authState.value){
         is AuthResponse.Success -> {
             val successResponse = (authState.value as AuthResponse.Success)
             if (successResponse.credentials != null){
-                val userEmail = successResponse.credentials.user.email
-                Log.i("TAG", "HomeScreen: user email $userEmail")
+//                val userEmail = successResponse.credentials.user.email
+                homeViewModel.updateUserLogin(true)
+                homeViewModel.updateAuthStatus(true)
+                homeViewModel.startTimerWorker()
             }else{
-                Log.i("TAG", "HomeScreen: user logout success")
+                homeViewModel.updateAuthStatus(false)
             }
         }
         is AuthResponse.Error -> {
@@ -57,5 +66,12 @@ fun HomeScreen(
         ){
             Text("Logout")
         }
+        Text(
+            if (userIsLoggedIn.value){
+                "User is logged in"
+            }else{
+                "User is not logged in"
+            }
+        )
     }
 }
