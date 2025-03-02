@@ -1,9 +1,12 @@
 package com.vikination.spaceflightnewsapp.di.modules
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.auth0.android.Auth0
 import com.auth0.android.auth0.BuildConfig
 import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
+import com.vikination.spaceflightnewsapp.ui.utils.PermissionManager
+import com.vikination.spaceflightnewsapp.ui.utils.UserPrefs
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +27,20 @@ object AppModule {
     @Singleton
     fun auth0Manager(
         @ApplicationContext context: Context,
-        auth0: Auth0) :AuthManager = AuthManager(context, auth0)
+        auth0: Auth0,
+        userPrefs: UserPrefs
+    ) :AuthManager = AuthManager(context, auth0, userPrefs)
+
+    @Provides
+    @Singleton
+    fun userPrefs(@ApplicationContext context: Context) :UserPrefs {
+        val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        return UserPrefs(prefs)
+    }
+
+    @Provides
+    @Singleton
+    fun permissionManager(@ApplicationContext context: Context): PermissionManager =
+        PermissionManager(context)
 
 }

@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.androidx.storage)
     implementation(libs.hilt.navigation)
+    implementation(libs.androidx.work)
     kapt(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
