@@ -1,5 +1,6 @@
 package com.vikination.spaceflightnewsapp.di.modules
 
+import com.vikination.spaceflightnewsapp.data.network.Auth0ApiService
 import com.vikination.spaceflightnewsapp.data.repositories.AuthRepositoryImpl
 import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
 import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
@@ -16,8 +17,9 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideAuthRepository(
-        authManager: AuthManager
+        authManager: AuthManager,
+        auth0ApiService: Auth0ApiService
     ): AuthRepository =
-        AuthRepositoryImpl( authManager)
+        AuthRepositoryImpl( authManager, auth0ApiService)
 
 }

@@ -1,4 +1,4 @@
-package com.vikination.spaceflightnewsapp.di.modules
+package com.vikination.spaceflightnewsapp.di
 
 import androidx.work.ListenableWorker
 import dagger.MapKey

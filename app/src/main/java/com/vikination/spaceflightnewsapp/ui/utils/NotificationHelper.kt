@@ -29,7 +29,7 @@ class NotificationHelper(val context :Context) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_notification_overlay)
             .setContentTitle("Session Expired")
-            .setContentText("You have been logged out due to inactivity.")
+            .setContentText("You have been logged out due to time limit to login in 10 minutes.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)

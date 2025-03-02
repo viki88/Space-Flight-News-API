@@ -32,6 +32,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         if (!permissionManager.hasNotificationPermission())
             permissionManager.requestNotificationPermission(this)
+        val isFromLogout = intent.getBooleanExtra("FROM_LOGOUT", false)
+        if (isFromLogout) {
+            authManager.logoutInBackground(this, onSuccess = {
+                finish()
+            }, onError = {
+                finish()
+            })
+        }
         enableEdgeToEdge()
         setContent {
             SpaceFlightNewsAppTheme {

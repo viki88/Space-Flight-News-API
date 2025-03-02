@@ -1,4 +1,4 @@
-package com.vikination.spaceflightnewsapp.di.modules
+package com.vikination.spaceflightnewsapp.di
 
 import android.content.Context
 import androidx.work.ListenableWorker

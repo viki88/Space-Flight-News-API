@@ -11,6 +11,9 @@ import com.auth0.android.authentication.storage.SharedPreferencesStorage
 import com.auth0.android.callback.Callback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
+import com.vikination.spaceflightnewsapp.R
+import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
+import retrofit2.Retrofit
 
 class AuthManager(
     private val context :Context,
@@ -21,6 +24,7 @@ class AuthManager(
         AuthenticationAPIClient(account),
         SharedPreferencesStorage(context)
     )
+    private var tokenId = ""
 
     fun login(activity: Activity, onSuccess: (Credentials) -> Unit, onError: (AuthenticationException) -> Unit){
         WebAuthProvider.login(account = account)
@@ -34,8 +38,8 @@ class AuthManager(
 
                 override fun onSuccess(result: Credentials) {
                     credentialManager.saveCredentials(result)
+                    tokenId = result.idToken
                     userPrefs.saveUserLoggedIn()
-                    scheduleInactivityNotification(context, System.currentTimeMillis())
                     scheduleLogoutWorker(context)
                     onSuccess(result)
                 }
@@ -59,18 +63,24 @@ class AuthManager(
             })
     }
 
-    fun logoutInBackground(){
-        WebAuthProvider.logout(account)
+    fun logoutInBackground(context: Context, onSuccess: () -> Unit, onError: (AuthenticationException) -> Unit){
+        WebAuthProvider
+            .logout(account)
             .withScheme("app")
             .start(context, object :Callback<Void?, AuthenticationException>{
                 override fun onFailure(error: AuthenticationException) {
-                    Log.e("AuthManager", "Logout failed: ${error.message}")
+                    onError(error)
                 }
 
                 override fun onSuccess(result: Void?) {
                     userPrefs.resetUserLoggedIn()
-                    Log.d("AuthManager", "Logout successful in background.")
+                    credentialManager.clearCredentials()
+                    onSuccess()
                 }
             })
     }
+
+    fun getTokenId() = tokenId
+
+
 }

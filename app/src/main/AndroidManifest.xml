@@ -17,7 +17,11 @@
         android:theme="@style/Theme.SpaceFlightNewsApp"
         tools:targetApi="31"
         android:name=".SpaceFlightNewsApplication">
-        <receiver android:name=".ui.utils.InactivityAlarm" android:exported="false"/>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+        <activity android:name=".ui.utils.LogoutScreen" android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
