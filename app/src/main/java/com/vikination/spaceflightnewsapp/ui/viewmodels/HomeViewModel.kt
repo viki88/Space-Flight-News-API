@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
 ) :ViewModel() {
 
     private val _authState = MutableStateFlow<AuthResponse>(AuthResponse.Loading())

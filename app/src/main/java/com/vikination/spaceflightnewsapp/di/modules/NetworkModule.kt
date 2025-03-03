@@ -1,6 +1,7 @@
 package com.vikination.spaceflightnewsapp.di.modules
 
 import com.vikination.spaceflightnewsapp.data.network.Auth0ApiService
+import com.vikination.spaceflightnewsapp.data.network.SpaceFlightNewsApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,4 +33,20 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(Auth0ApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideSpaceFlightNewsApiService(): SpaceFlightNewsApiService =
+        Retrofit.Builder()
+            .baseUrl("https://api.spaceflightnewsapi.net/")
+            .client(
+                OkHttpClient.Builder()
+                    .addNetworkInterceptor(
+                        HttpLoggingInterceptor().apply {
+                            level = HttpLoggingInterceptor.Level.BODY
+                        }
+                    ).build()
+            )
+            .addConverterFactory(GsonConverterFactory.create())
+            .build().create(SpaceFlightNewsApiService::class.java)
 }
