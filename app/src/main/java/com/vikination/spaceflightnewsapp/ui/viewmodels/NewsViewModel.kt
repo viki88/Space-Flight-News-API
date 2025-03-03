@@ -8,6 +8,7 @@ import com.vikination.spaceflightnewsapp.data.models.NewsResponse
 import com.vikination.spaceflightnewsapp.data.models.RequestResponse
 import com.vikination.spaceflightnewsapp.domain.repositories.SpaceFlightNewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -30,65 +31,71 @@ class NewsViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading : StateFlow<Boolean> = _isLoading
 
-    fun loadArticles(){
+    fun loadAllNews(forceRefresh: Boolean = false) {
+        if (!forceRefresh && _articles.value.isNotEmpty() && _blogs.value.isNotEmpty() && _reports.value.isNotEmpty()) {
+            return
+        }
         viewModelScope.launch {
-            spaceFlightNewsRepository.getArticles().collect{
-                    result ->
-                when(result){
-                    is RequestResponse.Success -> {
-                        _articles.value = (result.data as NewsResponse).results
-                        _isLoading.value = false
-                    }
-                    is RequestResponse.Error -> {
-                        Log.i("TAG", "loadArticles: ${result.message}")
-                        _isLoading.value = false
-                    }
-                    is RequestResponse.Loading -> {
-                        _isLoading.value = true
-                    }
-                }
+            coroutineScope {
+                launch { loadArticles() }
+                launch { loadBlogs() }
+                launch { loadReports() }
             }
         }
     }
 
-    fun loadBlogs(){
-        viewModelScope.launch {
-            spaceFlightNewsRepository.getBlogs().collect{
+    suspend fun loadArticles(){
+        spaceFlightNewsRepository.getArticles().collect{
                 result ->
-                when(result){
-                    is RequestResponse.Success -> {
-                        _blogs.value = (result.data as NewsResponse).results
-                        _isLoading.value = false
-                    }
-                    is RequestResponse.Error -> {
-                        Log.i("TAG", "Load news: ${result.message}")
-                        _isLoading.value = false
-                    }
-                    is RequestResponse.Loading -> {
-                        _isLoading.value = true
-                    }
+            when(result){
+                is RequestResponse.Success -> {
+                    _articles.value = (result.data as NewsResponse).results
+                    _isLoading.value = false
+                }
+                is RequestResponse.Error -> {
+                    Log.i("TAG", "loadArticles: ${result.message}")
+                    _isLoading.value = false
+                }
+                is RequestResponse.Loading -> {
+                    _isLoading.value = true
                 }
             }
-
         }
     }
 
-    fun loadReports(){
-        viewModelScope.launch {
-            spaceFlightNewsRepository.getReports().collect{
-                    result ->
-                when(result){
-                    is RequestResponse.Success -> {
-                        _reports.value = (result.data as NewsResponse).results
-                        _isLoading.value = false
-                    }
-                    is RequestResponse.Error -> {
-                        Log.i("TAG", "Load news: ${result.message}")
-                        _isLoading.value = false
-                    }
-                    is RequestResponse.Loading -> {
-                        _isLoading.value = true
-                    }
+    suspend fun loadBlogs(){
+        spaceFlightNewsRepository.getBlogs().collect{
+                result ->
+            when(result){
+                is RequestResponse.Success -> {
+                    _blogs.value = (result.data as NewsResponse).results
+                    _isLoading.value = false
+                }
+                is RequestResponse.Error -> {
+                    Log.i("TAG", "Load news: ${result.message}")
+                    _isLoading.value = false
+                }
+                is RequestResponse.Loading -> {
+                    _isLoading.value = true
+                }
+            }
+        }
+    }
+
+    suspend fun loadReports(){
+        spaceFlightNewsRepository.getReports().collect{
+                result ->
+            when(result){
+                is RequestResponse.Success -> {
+                    _reports.value = (result.data as NewsResponse).results
+                    _isLoading.value = false
+                }
+                is RequestResponse.Error -> {
+                    Log.i("TAG", "Load news: ${result.message}")
+                    _isLoading.value = false
+                }
+                is RequestResponse.Loading -> {
+                    _isLoading.value = true
                 }
             }
         }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.auth0.android.result.Credentials
 import com.vikination.spaceflightnewsapp.data.models.AuthResponse
 import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
 import com.vikination.spaceflightnewsapp.ui.utils.Constants
@@ -32,6 +33,9 @@ class HomeViewModel @Inject constructor(
 
     private val _userAuthStatus = MutableStateFlow(false)
     val userAuthStatus :StateFlow<Boolean> = _userAuthStatus
+
+    private val _userCredential = MutableStateFlow<Credentials?>(null)
+    val userCredentials : StateFlow<Credentials?> = _userCredential
 
     init {
         getIsLogoutStatus()
@@ -96,6 +100,12 @@ class HomeViewModel @Inject constructor(
     fun getAuthStatus() = viewModelScope.launch {
         authRepository.getAuthenticateStatus().collect{
             _userAuthStatus.value = it
+        }
+    }
+
+    fun loadUserInfo() = viewModelScope.launch {
+        authRepository.getUserInfo().collect{
+            _userCredential.value = it
         }
     }
 
