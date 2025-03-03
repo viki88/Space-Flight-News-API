@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.vikination.spaceflightnewsapp.data.models.AuthResponse
+import com.vikination.spaceflightnewsapp.data.models.NewsType
 import com.vikination.spaceflightnewsapp.ui.components.HeaderLabel
 import com.vikination.spaceflightnewsapp.ui.components.ImageItemList
 import com.vikination.spaceflightnewsapp.ui.theme.Route
@@ -130,7 +131,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.padding(8.dp))
                 HeaderLabel("Article",
                     onClickMore = {
-                        navController.navigate(Route.LIST.route)
+                        navController.navigate("list/${NewsType.ARTICLE.value}")
                     }
                 )
                 LazyRow(
@@ -143,7 +144,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.padding(8.dp))
                 HeaderLabel("Blog",
                     onClickMore = {
-                        navController.navigate(Route.LIST.route)
+                        navController.navigate("list/${NewsType.BLOG.value}")
                     }
                 )
                 LazyRow(
@@ -156,7 +157,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.padding(8.dp))
                 HeaderLabel("Report",
                     onClickMore = {
-                        navController.navigate(Route.LIST.route)
+                        navController.navigate("list/${NewsType.REPORT.value}")
                     }
                 )
                 LazyRow(

@@ -7,8 +7,8 @@ abstract class BaseResponse{
     var type :NewsType = NewsType.ARTICLE
 }
 
-enum class NewsType{
-    ARTICLE,
-    BLOG,
-    REPORT
+sealed class NewsType(val value :String){
+    data object ARTICLE : NewsType("Article")
+    data object BLOG :NewsType("Blog")
+    data object REPORT :NewsType("Report")
 }

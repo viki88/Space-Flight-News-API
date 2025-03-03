@@ -8,17 +8,20 @@ interface SpaceFlightNewsApiService {
 
     @GET("v4/articles")
     suspend fun getArticles(
-        @Query("format") format: String = "json"
+        @Query("format") format: String = "json",
+        @Query("search") query: String? = null
     ): NewsResponse
 
     @GET("v4/blogs")
     suspend fun getBlogs(
-        @Query("format") format: String = "json"
+        @Query("format") format: String = "json",
+        @Query("search") query: String? = null
     ): NewsResponse
 
     @GET("v4/reports")
     suspend fun getReports(
-        @Query("format") format: String = "json"
+        @Query("format") format: String = "json",
+        @Query("search") query: String? = null
     ): NewsResponse
 
 }
