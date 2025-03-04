@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -36,11 +37,19 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideSpaceFlightNewsApiService(): SpaceFlightNewsApiService =
+    fun provideCertificatePinnerNewsAPI() : CertificatePinner =
+        CertificatePinner.Builder()
+            .add("api.spaceflightnewsapi.net", "sha256/0QaROX1BpIov5Vvv71S5HQ/DKRT6wvQ1ez/kwSsj/sA=")
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideSpaceFlightNewsApiService(certificatePinner: CertificatePinner): SpaceFlightNewsApiService =
         Retrofit.Builder()
             .baseUrl("https://api.spaceflightnewsapi.net/")
             .client(
                 OkHttpClient.Builder()
+                    .certificatePinner(certificatePinner)
                     .addNetworkInterceptor(
                         HttpLoggingInterceptor().apply {
                             level = HttpLoggingInterceptor.Level.BODY

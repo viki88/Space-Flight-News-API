@@ -3,9 +3,7 @@ package com.vikination.spaceflightnewsapp.domain.models
 import com.vikination.spaceflightnewsapp.data.models.Author
 import com.vikination.spaceflightnewsapp.data.models.Event
 import com.vikination.spaceflightnewsapp.data.models.Launch
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class News (
     val id :Int,
     val title :String,

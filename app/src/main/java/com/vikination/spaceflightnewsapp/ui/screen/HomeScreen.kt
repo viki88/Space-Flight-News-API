@@ -110,8 +110,12 @@ fun HomeScreen(
         }
     ) {
         padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)){
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)){
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)) {
                 Text(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
@@ -204,7 +208,10 @@ fun HomeScreen(
                         .wrapContentSize(Alignment.Center)
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.Center).size(80.dp)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(align = Alignment.Center)
+                            .size(80.dp)
                     )
                 }
             }
