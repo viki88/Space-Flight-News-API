@@ -1,9 +1,7 @@
 package com.vikination.spaceflightnewsapp.ui.components
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,16 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.vikination.spaceflightnewsapp.data.models.News
+import com.vikination.spaceflightnewsapp.domain.models.News
 
 @Composable
 fun ListMoreItem(
     news: News,
-    onClickNews : (News) -> Unit
+    onSelectedNews: () -> Unit
 ) {
     Box(
         contentAlignment = Alignment.BottomCenter,
-        modifier = Modifier.fillMaxWidth().height(300.dp)
+        modifier = Modifier.fillMaxWidth().height(300.dp).clickable {
+            onSelectedNews()
+        }
     ){
         Card(
             modifier = Modifier.padding(horizontal = 4.dp)
@@ -38,10 +38,7 @@ fun ListMoreItem(
                     contentDescription = news.title,
                     modifier = Modifier.fillMaxSize()
                 )
-                if (news.launches != null &&
-                    news.events != null &&
-                    news.launches.isNotEmpty() &&
-                    news.events.isNotEmpty()){
+                if (news.launches.isNotEmpty() && news.events.isNotEmpty()){
                     LaunchEventComponent(
                         news.launches,
                         news.events

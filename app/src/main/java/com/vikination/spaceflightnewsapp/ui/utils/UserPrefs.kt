@@ -26,5 +26,5 @@ class UserPrefs(private val prefs :SharedPreferences) {
 
     fun getAuthenticateStatus() = prefs.getBoolean("is_authenticate", false)
 
-    fun getLogoutStatus() = prefs.getBoolean("is_logout", false)
+    fun getLogoutStatus() = prefs.getBoolean("is_logout", true)
 }

@@ -8,10 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.vikination.spaceflightnewsapp.data.models.News
+import com.vikination.spaceflightnewsapp.data.models.NewsResponseModel
+import com.vikination.spaceflightnewsapp.domain.models.News
 
 @Composable
-fun ImageItemList(news: News) {
+fun ImageItemList(
+    news: News
+) {
     Card {
         AsyncImage(
             contentScale = ContentScale.Crop,

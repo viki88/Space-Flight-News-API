@@ -13,10 +13,14 @@ import javax.inject.Inject
 class SpaceFlightNewsRepositoryImpl @Inject constructor(
     private val spaceFlightNewsApiService: SpaceFlightNewsApiService
 ) :SpaceFlightNewsRepository {
-    override fun getArticles(query: String?, newsSite :String?): Flow<RequestResponse> = flow {
+    override fun getArticles(query: String?, newsSite :String?, ordering: String?): Flow<RequestResponse> = flow {
         try {
             emit(RequestResponse.Loading)
-            val response = spaceFlightNewsApiService.getArticles(query = query, newsSite = newsSite)
+            val response = spaceFlightNewsApiService.getArticles(
+                query = query,
+                newsSite = newsSite,
+                ordering = ordering
+            )
             response.type = NewsType.ARTICLE
             emit(RequestResponse.Success(response))
         }catch (e :Exception){
@@ -24,10 +28,14 @@ class SpaceFlightNewsRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun getBlogs(query: String?, newsSite :String?): Flow<RequestResponse> = flow {
+    override fun getBlogs(query: String?, newsSite :String?, ordering: String?): Flow<RequestResponse> = flow {
         try {
             emit(RequestResponse.Loading)
-            val response = spaceFlightNewsApiService.getBlogs(query = query, newsSite = newsSite)
+            val response = spaceFlightNewsApiService.getBlogs(
+                query = query,
+                newsSite = newsSite,
+                ordering = ordering
+            )
             response.type = NewsType.BLOG
             emit(RequestResponse.Success(response))
         }catch (e :Exception){
@@ -35,10 +43,14 @@ class SpaceFlightNewsRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun getReports(query: String?, newsSite :String?): Flow<RequestResponse> = flow {
+    override fun getReports(query: String?, newsSite :String?, ordering: String?): Flow<RequestResponse> = flow {
         try {
             emit(RequestResponse.Loading)
-            val response = spaceFlightNewsApiService.getReports(query = query, newsSite = newsSite)
+            val response = spaceFlightNewsApiService.getReports(
+                query = query,
+                newsSite = newsSite,
+                ordering = ordering
+            )
             response.type = NewsType.REPORT
             emit(RequestResponse.Success(response))
         }catch (e :Exception){

@@ -1,13 +1,18 @@
 package com.vikination.spaceflightnewsapp.ui.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vikination.spaceflightnewsapp.data.models.News
+import com.vikination.spaceflightnewsapp.data.mapper.NewsMapper
 import com.vikination.spaceflightnewsapp.data.models.NewsResponse
 import com.vikination.spaceflightnewsapp.data.models.NewsSiteListResponse
 import com.vikination.spaceflightnewsapp.data.models.NewsType
 import com.vikination.spaceflightnewsapp.data.models.RequestResponse
+import com.vikination.spaceflightnewsapp.domain.models.News
+import com.vikination.spaceflightnewsapp.domain.models.emptyNews
 import com.vikination.spaceflightnewsapp.domain.repositories.SpaceFlightNewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.coroutineScope
@@ -33,17 +38,19 @@ class NewsViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading : StateFlow<Boolean> = _isLoading
 
-    private val _selectedNews = MutableStateFlow<List<News>>(emptyList())
-    val selectedNews : StateFlow<List<News>> = _selectedNews
+    private val _selectedNewsResponseModel = MutableStateFlow<List<News>>(emptyList())
+    val selectedNewsResponseModel : StateFlow<List<News>> = _selectedNewsResponseModel
 
-    private val _currentSelectedNews = MutableStateFlow(NewsType.ARTICLE.value)
-    val currentSelectedNews : StateFlow<String> = _currentSelectedNews
+    private val _currentSelectedNewsList = MutableStateFlow(NewsType.ARTICLE.value)
+    private val currentSelectedNewsList : StateFlow<String> = _currentSelectedNewsList
+
+    var selectedNews by mutableStateOf(emptyNews())
 
     private val _newsSites = MutableStateFlow<List<String>>(emptyList())
     val newsSites : StateFlow<List<String>> = _newsSites
 
     fun setCurrentSelectedNews(type :String){
-        _currentSelectedNews.value = type
+        _currentSelectedNewsList.value = type
     }
 
     fun loadAllNews(forceRefresh: Boolean = false) {
@@ -59,13 +66,17 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    suspend fun loadArticles(query: String? = null, newsSite: String? = null){
-        spaceFlightNewsRepository.getArticles(query, newsSite).collect{
+    private suspend fun loadArticles(
+        query: String? = null,
+        newsSite: String? = null,
+        ordering: String? = null
+    ){
+        spaceFlightNewsRepository.getArticles(query, newsSite, ordering).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
-                    _articles.value = (result.data as NewsResponse).results
-                    if (_currentSelectedNews.value == NewsType.ARTICLE.value) _selectedNews.value = _articles.value
+                    _articles.value = NewsMapper.mapToNewsUiModelList((result.data as NewsResponse).results)
+                    if (currentSelectedNewsList.value == NewsType.ARTICLE.value) _selectedNewsResponseModel.value = _articles.value
                     _isLoading.value = false
                 }
                 is RequestResponse.Error -> {
@@ -79,13 +90,17 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    suspend fun loadBlogs(query: String? = null, newsSite: String? = null){
-        spaceFlightNewsRepository.getBlogs(query, newsSite).collect{
+    private suspend fun loadBlogs(
+        query: String? = null,
+        newsSite: String? = null,
+        ordering: String? = null
+    ){
+        spaceFlightNewsRepository.getBlogs(query, newsSite, ordering).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
-                    _blogs.value = (result.data as NewsResponse).results
-                    if (_currentSelectedNews.value == NewsType.BLOG.value) _selectedNews.value = _blogs.value
+                    _blogs.value = NewsMapper.mapToNewsUiModelList((result.data as NewsResponse).results)
+                    if (currentSelectedNewsList.value == NewsType.BLOG.value) _selectedNewsResponseModel.value = _blogs.value
                     _isLoading.value = false
                 }
                 is RequestResponse.Error -> {
@@ -99,13 +114,17 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    suspend fun loadReports(query: String? = null, newsSite: String? = null){
-        spaceFlightNewsRepository.getReports(query, newsSite).collect{
+    private suspend fun loadReports(
+        query: String? = null,
+        newsSite: String? = null,
+        ordering: String? = null
+    ){
+        spaceFlightNewsRepository.getReports(query, newsSite,ordering).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
-                    _reports.value = (result.data as NewsResponse).results
-                    if (_currentSelectedNews.value == NewsType.REPORT.value) _selectedNews.value = _reports.value
+                    _reports.value = NewsMapper.mapToNewsUiModelList((result.data as NewsResponse).results)
+                    if (currentSelectedNewsList.value == NewsType.REPORT.value) _selectedNewsResponseModel.value = _reports.value
                     _isLoading.value = false
                 }
                 is RequestResponse.Error -> {
@@ -119,51 +138,17 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    fun loadNews(){
+    fun loadNews(query :String? = null , newsSite :String? = null, ordering: String? = null){
         viewModelScope.launch {
-            when(_currentSelectedNews.value){
+            when(currentSelectedNewsList.value){
                 NewsType.ARTICLE.value -> {
-                    loadArticles()
+                    loadArticles(query, newsSite, ordering)
                 }
                 NewsType.BLOG.value -> {
-                    loadBlogs()
+                    loadBlogs(query, newsSite, ordering)
                 }
                 NewsType.REPORT.value -> {
-                    loadReports()
-                }
-
-            }
-            launch { loadNewsSite() }
-        }
-    }
-
-    fun loadNewsByQuery(query :String){
-        viewModelScope.launch {
-            when(_currentSelectedNews.value){
-                NewsType.ARTICLE.value -> {
-                    loadArticles(query)
-                }
-                NewsType.BLOG.value -> {
-                    loadBlogs(query)
-                }
-                NewsType.REPORT.value -> {
-                    loadReports(query)
-                }
-            }
-        }
-    }
-
-    fun loadNewsByFilterAndQuery(query :String, newsSite :String){
-        viewModelScope.launch {
-            when(_currentSelectedNews.value){
-                NewsType.ARTICLE.value -> {
-                    loadArticles(query, newsSite)
-                }
-                NewsType.BLOG.value -> {
-                    loadBlogs(query, newsSite)
-                }
-                NewsType.REPORT.value -> {
-                    loadReports(query, newsSite)
+                    loadReports(query, newsSite, ordering)
                 }
             }
         }

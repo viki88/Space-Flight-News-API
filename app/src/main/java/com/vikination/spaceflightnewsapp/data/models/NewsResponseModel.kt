@@ -2,7 +2,7 @@ package com.vikination.spaceflightnewsapp.data.models
 
 import com.google.gson.annotations.SerializedName
 
-data class News(
+data class NewsResponseModel(
     val id :Int?,
     val title :String?,
     val authors :List<Author>?,
