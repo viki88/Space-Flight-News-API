@@ -14,6 +14,7 @@ interface SpaceFlightNewsApiService {
         @Query("has_launch") hasLaunch: Boolean = true,
         @Query("has_event") hasEvent: Boolean = true,
         @Query("news_site") newsSite: String? = null,
+        @Query("ordering") ordering: String? = null
     ): NewsResponse
 
     @GET("v4/blogs")
@@ -21,6 +22,7 @@ interface SpaceFlightNewsApiService {
         @Query("format") format: String = "json",
         @Query("search") query: String? = null,
         @Query("news_site") newsSite: String? = null,
+        @Query("ordering") ordering: String? = null
     ): NewsResponse
 
     @GET("v4/reports")
@@ -28,6 +30,7 @@ interface SpaceFlightNewsApiService {
         @Query("format") format: String = "json",
         @Query("search") query: String? = null,
         @Query("news_site") newsSite: String? = null,
+        @Query("ordering") ordering: String? = null
     ): NewsResponse
 
     @GET("v4/info")

@@ -1,8 +1,9 @@
 package com.vikination.spaceflightnewsapp.data.models
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
-data class News(
+data class NewsResponseModel(
     val id :Int?,
     val title :String?,
     val authors :List<Author>?,
@@ -17,11 +18,13 @@ data class News(
     val events :List<Event>?,
 )
 
+@Serializable
 data class Launch(
     @SerializedName("launch_id") val id :String?,
     val provider :String?,
 )
 
+@Serializable
 data class Event(
     @SerializedName("event_id") val id :String?,
     val provider :String?,

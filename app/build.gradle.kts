@@ -4,7 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.kapt)
-
+    alias(libs.plugins.kotlin.serialization.plugin)
+//    alias(libs.plugins.kotlin.jvm)
 }
 
 android {
@@ -77,6 +78,7 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.material.icon)
     implementation(libs.datastore)
+    implementation(libs.kotlin.serialization)
     kapt(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
