@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vikination.spaceflightnewsapp.data.models.News
 import com.vikination.spaceflightnewsapp.data.models.NewsResponse
+import com.vikination.spaceflightnewsapp.data.models.NewsSiteListResponse
 import com.vikination.spaceflightnewsapp.data.models.NewsType
 import com.vikination.spaceflightnewsapp.data.models.RequestResponse
 import com.vikination.spaceflightnewsapp.domain.repositories.SpaceFlightNewsRepository
@@ -13,7 +14,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import retrofit2.http.Query
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,6 +39,9 @@ class NewsViewModel @Inject constructor(
     private val _currentSelectedNews = MutableStateFlow(NewsType.ARTICLE.value)
     val currentSelectedNews : StateFlow<String> = _currentSelectedNews
 
+    private val _newsSites = MutableStateFlow<List<String>>(emptyList())
+    val newsSites : StateFlow<List<String>> = _newsSites
+
     fun setCurrentSelectedNews(type :String){
         _currentSelectedNews.value = type
     }
@@ -56,8 +59,8 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    suspend fun loadArticles(query: String? = null){
-        spaceFlightNewsRepository.getArticles(query).collect{
+    suspend fun loadArticles(query: String? = null, newsSite: String? = null){
+        spaceFlightNewsRepository.getArticles(query, newsSite).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
@@ -76,8 +79,8 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    suspend fun loadBlogs(query: String? = null){
-        spaceFlightNewsRepository.getBlogs(query).collect{
+    suspend fun loadBlogs(query: String? = null, newsSite: String? = null){
+        spaceFlightNewsRepository.getBlogs(query, newsSite).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
@@ -96,8 +99,8 @@ class NewsViewModel @Inject constructor(
         }
     }
 
-    suspend fun loadReports(query: String? = null){
-        spaceFlightNewsRepository.getReports(query).collect{
+    suspend fun loadReports(query: String? = null, newsSite: String? = null){
+        spaceFlightNewsRepository.getReports(query, newsSite).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
@@ -130,6 +133,7 @@ class NewsViewModel @Inject constructor(
                 }
 
             }
+            launch { loadNewsSite() }
         }
     }
 
@@ -144,6 +148,42 @@ class NewsViewModel @Inject constructor(
                 }
                 NewsType.REPORT.value -> {
                     loadReports(query)
+                }
+            }
+        }
+    }
+
+    fun loadNewsByFilterAndQuery(query :String, newsSite :String){
+        viewModelScope.launch {
+            when(_currentSelectedNews.value){
+                NewsType.ARTICLE.value -> {
+                    loadArticles(query, newsSite)
+                }
+                NewsType.BLOG.value -> {
+                    loadBlogs(query, newsSite)
+                }
+                NewsType.REPORT.value -> {
+                    loadReports(query, newsSite)
+                }
+            }
+        }
+    }
+
+    suspend fun loadNewsSite() {
+        spaceFlightNewsRepository.getNewsSites().collect{
+                result ->
+            when(result){
+                is RequestResponse.Success -> {
+                    _newsSites.value = (result.data as NewsSiteListResponse).newsSite ?: emptyList()
+                    Log.i("TAG", "loadNewsSite: ${_newsSites.value}")
+                    _isLoading.value = false
+                }
+                is RequestResponse.Error -> {
+                    Log.i("TAG", "Load news sites: ${result.message}")
+                    _isLoading.value = false
+                }
+                is RequestResponse.Loading -> {
+                    _isLoading.value = true
                 }
             }
         }

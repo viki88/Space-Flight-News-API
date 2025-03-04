@@ -1,16 +1,20 @@
 package com.vikination.spaceflightnewsapp.di.modules
 
+import android.content.Context
 import com.vikination.spaceflightnewsapp.data.network.Auth0ApiService
 import com.vikination.spaceflightnewsapp.data.network.SpaceFlightNewsApiService
 import com.vikination.spaceflightnewsapp.data.repositories.AuthRepositoryImpl
+import com.vikination.spaceflightnewsapp.data.repositories.RecentSearchRepositoryImpl
 import com.vikination.spaceflightnewsapp.data.repositories.SpaceFlightNewsRepositoryImpl
 import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
+import com.vikination.spaceflightnewsapp.domain.repositories.RecentSearchRepository
 import com.vikination.spaceflightnewsapp.domain.repositories.SpaceFlightNewsRepository
 import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
 import com.vikination.spaceflightnewsapp.ui.utils.UserPrefs
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -32,5 +36,10 @@ class RepositoryModule {
     fun provideSpaceFlightNewsRepository(
         spaceFlightNewsApiService: SpaceFlightNewsApiService
     ): SpaceFlightNewsRepository = SpaceFlightNewsRepositoryImpl(spaceFlightNewsApiService)
+
+    @Provides
+    @Singleton
+    fun provideRecentSearchRepository(@ApplicationContext context: Context) :RecentSearchRepository =
+        RecentSearchRepositoryImpl(context)
 
 }

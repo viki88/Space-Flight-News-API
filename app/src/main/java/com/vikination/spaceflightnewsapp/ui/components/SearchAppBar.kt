@@ -1,7 +1,11 @@
 package com.vikination.spaceflightnewsapp.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSizeIn
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -26,8 +30,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,12 +46,15 @@ fun SearchAppBar(
     onSearchQueryChanged : (String) -> Unit,
     onFilterSelected : (String) -> Unit,
     onSortSelected : (String) -> Unit,
+    onSelectedRecentSearch : (String) -> Unit,
     listMenuFilter :List<String>,
+    recentSearches :List<String>
 ) {
 
     var isSearching by remember { mutableStateOf(false) }
     var showMenuFilter by remember { mutableStateOf(false) }
     var showMenuSort by remember { mutableStateOf(false) }
+    var isDropdownExpanded by remember { mutableStateOf(false) }
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -54,21 +63,42 @@ fun SearchAppBar(
         ),
         title = {
             if(isSearching){
-                TextField(
-                    value = searchQuery,
-                    onValueChange = onSearchQueryChanged,
-                    placeholder = { Text("Search...") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            onSearchClicked()
-                        }
+                Box{
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = {
+                            onSearchQueryChanged(it)
+                            isDropdownExpanded = it.isNotEmpty()
+                        },
+                        placeholder = { Text("Search...") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Search
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                onSearchClicked()
+                                isDropdownExpanded = false
+                            }
+                        )
                     )
-                )
+                    DropdownMenu(
+                        expanded = isDropdownExpanded,
+                        onDismissRequest = { isDropdownExpanded = false },
+                        modifier = Modifier.fillMaxWidth().background(Color.White).padding(horizontal = 16.dp)
+                    ) {
+                        recentSearches.forEach { query ->
+                            DropdownMenuItem(
+                                text = { Text(query) },
+                                onClick = {
+                                    onSelectedRecentSearch(query)
+                                    isDropdownExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
             }else Text(type)
         },
         navigationIcon = {
@@ -102,7 +132,8 @@ fun SearchAppBar(
                     }
                     DropdownMenu(
                         expanded = showMenuFilter,
-                        onDismissRequest = { showMenuFilter = false }
+                        onDismissRequest = { showMenuFilter = false },
+                        modifier = Modifier.requiredSizeIn(maxHeight = 300.dp)
                     ) {
                         for (filter in listMenuFilter){
                             DropdownMenuItem(text = { Text(filter) }, onClick = {

@@ -1,27 +1,19 @@
 package com.vikination.spaceflightnewsapp.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,19 +27,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.vikination.spaceflightnewsapp.ui.components.ListMoreItem
 import com.vikination.spaceflightnewsapp.ui.components.SearchAppBar
 import com.vikination.spaceflightnewsapp.ui.viewmodels.NewsViewModel
+import com.vikination.spaceflightnewsapp.ui.viewmodels.RecentSearchViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
     navController: NavController,
     type: String,
-    newsViewModel: NewsViewModel = hiltViewModel()
+    newsViewModel: NewsViewModel = hiltViewModel(),
+    recentSearchViewModel: RecentSearchViewModel = hiltViewModel()
 ){
     val news by newsViewModel.selectedNews.collectAsState()
+    val recentSearches by recentSearchViewModel.recentSearches.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     val isLoading by newsViewModel.isLoading.collectAsState()
+    val newsSites by newsViewModel.newsSites.collectAsState()
 
     LaunchedEffect(Unit) {
         newsViewModel.setCurrentSelectedNews(type)
@@ -64,24 +61,37 @@ fun ListScreen(
                     searchQuery = query
                 },
                 onFilterSelected = { filter ->
+                    newsViewModel.loadNewsByFilterAndQuery(searchQuery, filter)
                 },
                 onSortSelected = { sort ->
 
                 },
                 onSearchClicked = {
                     newsViewModel.loadNewsByQuery(searchQuery)
+                    recentSearchViewModel.addSearchQuery(searchQuery)
+                    searchQuery = ""
                 },
-                listMenuFilter = listOf("news","blogs","reports")
+                onSelectedRecentSearch = {
+                    query ->
+                        newsViewModel.loadNewsByQuery(query)
+                        recentSearchViewModel.addSearchQuery(query)
+                },
+                listMenuFilter = newsSites,
+                recentSearches = recentSearches
             )
         }
     ) {
         padding ->
         Column(
-            Modifier.padding(padding)
+            Modifier
+                .padding(padding)
+                .padding(8.dp)
         ){
-            LazyColumn {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 items(news.size){ index ->
-                    Text(news[index].title?:"No Title")
+                    ListMoreItem(news[index]){}
                 }
             }
         }
@@ -93,7 +103,10 @@ fun ListScreen(
                     .wrapContentSize(Alignment.Center)
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.fillMaxSize().wrapContentSize(align = Alignment.Center).size(80.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(align = Alignment.Center)
+                        .size(80.dp)
                 )
             }
         }
