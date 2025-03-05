@@ -1,11 +1,13 @@
 package com.vikination.spaceflightnewsapp.data.models
 
-data class Author(
+import com.vikination.spaceflightnewsapp.data.source.local.entity.SocialEntity
+
+data class AuthorResponse(
     val name :String?,
-    val socials :Social?
+    val socials :SocialResponse?
 )
 
-data class Social(
+data class SocialResponse(
     val x :String?,
     val youtube :String?,
     val instagram :String?,

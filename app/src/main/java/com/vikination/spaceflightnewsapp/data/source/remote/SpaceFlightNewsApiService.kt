@@ -1,4 +1,4 @@
-package com.vikination.spaceflightnewsapp.data.network
+package com.vikination.spaceflightnewsapp.data.source.remote
 
 import com.vikination.spaceflightnewsapp.data.models.NewsResponse
 import com.vikination.spaceflightnewsapp.data.models.NewsSiteListResponse

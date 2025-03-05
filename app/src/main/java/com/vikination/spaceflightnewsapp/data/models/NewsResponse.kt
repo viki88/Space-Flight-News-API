@@ -1,5 +1,5 @@
 package com.vikination.spaceflightnewsapp.data.models
 
 data class NewsResponse(
-    val results :List<NewsResponseModel>
+    var results :List<NewsResponseModel>
 ) :BaseResponse()

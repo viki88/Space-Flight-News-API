@@ -6,8 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vikination.spaceflightnewsapp.data.mapper.NewsMapper
-import com.vikination.spaceflightnewsapp.data.models.NewsResponse
+import com.vikination.spaceflightnewsapp.data.models.NewsData
 import com.vikination.spaceflightnewsapp.data.models.NewsSiteListResponse
 import com.vikination.spaceflightnewsapp.data.models.NewsType
 import com.vikination.spaceflightnewsapp.data.models.RequestResponse
@@ -71,11 +70,11 @@ class NewsViewModel @Inject constructor(
         newsSite: String? = null,
         ordering: String? = null
     ){
-        spaceFlightNewsRepository.getArticles(query, newsSite, ordering).collect{
+        spaceFlightNewsRepository.getNews(query, newsSite, ordering, NewsType.ARTICLE).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
-                    _articles.value = NewsMapper.mapToNewsUiModelList((result.data as NewsResponse).results)
+                    _articles.value = (result.data as NewsData).results
                     if (currentSelectedNewsList.value == NewsType.ARTICLE.value) _selectedNewsResponseModel.value = _articles.value
                     _isLoading.value = false
                 }
@@ -95,11 +94,11 @@ class NewsViewModel @Inject constructor(
         newsSite: String? = null,
         ordering: String? = null
     ){
-        spaceFlightNewsRepository.getBlogs(query, newsSite, ordering).collect{
+        spaceFlightNewsRepository.getNews(query, newsSite, ordering, NewsType.BLOG).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
-                    _blogs.value = NewsMapper.mapToNewsUiModelList((result.data as NewsResponse).results)
+                    _blogs.value = (result.data as NewsData).results
                     if (currentSelectedNewsList.value == NewsType.BLOG.value) _selectedNewsResponseModel.value = _blogs.value
                     _isLoading.value = false
                 }
@@ -119,11 +118,11 @@ class NewsViewModel @Inject constructor(
         newsSite: String? = null,
         ordering: String? = null
     ){
-        spaceFlightNewsRepository.getReports(query, newsSite,ordering).collect{
+        spaceFlightNewsRepository.getNews(query, newsSite, ordering, NewsType.REPORT).collect{
                 result ->
             when(result){
                 is RequestResponse.Success -> {
-                    _reports.value = NewsMapper.mapToNewsUiModelList((result.data as NewsResponse).results)
+                    _reports.value = (result.data as NewsData).results
                     if (currentSelectedNewsList.value == NewsType.REPORT.value) _selectedNewsResponseModel.value = _reports.value
                     _isLoading.value = false
                 }

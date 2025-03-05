@@ -1,13 +1,9 @@
 package com.vikination.spaceflightnewsapp.domain.models
 
-import com.vikination.spaceflightnewsapp.data.models.Author
-import com.vikination.spaceflightnewsapp.data.models.Event
-import com.vikination.spaceflightnewsapp.data.models.Launch
-
 data class News (
     val id :Int,
     val title :String,
-    val authors :List<Author>,
+    val authorResponses :List<Author>,
     val imageUrl :String,
     val summary :String,
     val url :String,
@@ -19,11 +15,35 @@ data class News (
     val events :List<Event>,
 )
 
+data class Author(
+    val name :String,
+    val socials : Social
+)
+
+data class Social(
+    val x :String,
+    val youtube :String,
+    val instagram :String,
+    val linkedin :String,
+    val mastodon :String,
+    val bluesky :String,
+)
+
+data class Launch(
+    val id :String,
+    val provider :String,
+)
+
+data class Event(
+    val id :String,
+    val provider :String,
+)
+
 fun emptyNews() =
     News(
         id = 0,
         title = "",
-        authors = emptyList(),
+        authorResponses = emptyList(),
         imageUrl = "",
         summary = "",
         url = "",

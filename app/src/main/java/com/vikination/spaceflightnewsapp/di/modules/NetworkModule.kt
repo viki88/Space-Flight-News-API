@@ -1,7 +1,7 @@
 package com.vikination.spaceflightnewsapp.di.modules
 
-import com.vikination.spaceflightnewsapp.data.network.Auth0ApiService
-import com.vikination.spaceflightnewsapp.data.network.SpaceFlightNewsApiService
+import com.vikination.spaceflightnewsapp.data.source.remote.Auth0ApiService
+import com.vikination.spaceflightnewsapp.data.source.remote.SpaceFlightNewsApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,8 +19,11 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAuth0ApiService():
-            Auth0ApiService {
+    fun provideAuth0ApiService(): Auth0ApiService {
+        CertificatePinner.Builder()
+            .add("dev-ub3leimgvk0dnja2.us.auth0.com", "sha256/iUjmaqdLqYhF8roudwDZ3jE9X4F7LgA1srH9Rjd388A=")
+            .build()
+
         return Retrofit.Builder()
             .baseUrl("https://dev-ub3leimgvk0dnja2.us.auth0.com/")
             .client(
@@ -37,15 +40,15 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCertificatePinnerNewsAPI() : CertificatePinner =
-        CertificatePinner.Builder()
-            .add("api.spaceflightnewsapi.net", "sha256/0QaROX1BpIov5Vvv71S5HQ/DKRT6wvQ1ez/kwSsj/sA=")
+    fun provideSpaceFlightNewsApiService(): SpaceFlightNewsApiService {
+        val certificatePinner = CertificatePinner.Builder()
+            .add(
+                "api.spaceflightnewsapi.net",
+                "sha256/0QaROX1BpIov5Vvv71S5HQ/DKRT6wvQ1ez/kwSsj/sA="
+            )
             .build()
 
-    @Provides
-    @Singleton
-    fun provideSpaceFlightNewsApiService(certificatePinner: CertificatePinner): SpaceFlightNewsApiService =
-        Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl("https://api.spaceflightnewsapi.net/")
             .client(
                 OkHttpClient.Builder()
@@ -58,4 +61,5 @@ object NetworkModule {
             )
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(SpaceFlightNewsApiService::class.java)
+    }
 }
