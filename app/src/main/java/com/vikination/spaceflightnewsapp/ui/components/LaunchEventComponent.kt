@@ -17,13 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.vikination.spaceflightnewsapp.data.models.Event
-import com.vikination.spaceflightnewsapp.data.models.Launch
+import com.vikination.spaceflightnewsapp.domain.models.Event
+import com.vikination.spaceflightnewsapp.domain.models.Launch
 
 @Composable
 fun LaunchEventComponent(
-    launch: List<Launch>?,
-    event: List<Event>?
+    launches: List<Launch>?,
+    events: List<Event>?
 ){
     Box(
         modifier = Modifier
@@ -44,7 +44,7 @@ fun LaunchEventComponent(
         Row(
             modifier = Modifier.padding(16.dp)
         ) {
-            launch?.let {
+            launches?.let {
                 Column(
                     Modifier.fillMaxWidth().weight(1f)
                 ) {
@@ -57,9 +57,9 @@ fun LaunchEventComponent(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Column {
-                        launch.forEach{
+                        launches.forEach{
                             Text(
-                                it.provider ?: "",
+                                it.provider,
                                 style = TextStyle(
                                     color = Color.White,
                                     fontWeight = FontWeight.Normal
@@ -69,8 +69,8 @@ fun LaunchEventComponent(
                     }
                 }
             }
-            if (launch != null && event !=null) Spacer(modifier = Modifier.width(8.dp))
-            event?.let {
+            if (launches != null && events !=null) Spacer(modifier = Modifier.width(8.dp))
+            events?.let {
                 Column(
                     Modifier.fillMaxWidth().weight(1f)
                 ) {
@@ -83,9 +83,9 @@ fun LaunchEventComponent(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Column {
-                        event.forEach{
+                        events.forEach{
                             Text(
-                                it.provider ?: "",
+                                it.provider,
                                 style = TextStyle(
                                     color = Color.White,
                                     fontWeight = FontWeight.Normal

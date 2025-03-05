@@ -3,7 +3,7 @@ package com.vikination.spaceflightnewsapp.data.repositories
 import android.app.Activity
 import com.auth0.android.result.Credentials
 import com.vikination.spaceflightnewsapp.data.models.AuthResponse
-import com.vikination.spaceflightnewsapp.data.network.Auth0ApiService
+import com.vikination.spaceflightnewsapp.data.source.remote.Auth0ApiService
 import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
 import com.vikination.spaceflightnewsapp.ui.utils.AuthManager
 import com.vikination.spaceflightnewsapp.ui.utils.UserPrefs

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class NewsResponseModel(
     val id :Int?,
     val title :String?,
-    val authors :List<Author>?,
+    val authorResponses :List<AuthorResponse>?,
     @SerializedName("image_url") val imageUrl :String?,
     val summary :String?,
     val url :String?,
@@ -13,17 +13,16 @@ data class NewsResponseModel(
     @SerializedName("published_at") val publishedAt :String?,
     @SerializedName("updated_at") val updatedAt :String?,
     val featured :Boolean?,
-    val launches :List<Launch>?,
-    val events :List<Event>?,
+    val launchResponses :List<LaunchResponse>?,
+    val eventResponses :List<EventResponse>?,
 )
 
-data class Launch(
+data class LaunchResponse(
     @SerializedName("launch_id") val id :String?,
     val provider :String?,
 )
 
-data class Event(
+data class EventResponse(
     @SerializedName("event_id") val id :String?,
     val provider :String?,
-
 )

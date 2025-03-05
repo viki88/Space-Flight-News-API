@@ -1,11 +1,12 @@
 package com.vikination.spaceflightnewsapp.di.modules
 
 import android.content.Context
-import com.vikination.spaceflightnewsapp.data.network.Auth0ApiService
-import com.vikination.spaceflightnewsapp.data.network.SpaceFlightNewsApiService
+import com.vikination.spaceflightnewsapp.data.source.remote.Auth0ApiService
+import com.vikination.spaceflightnewsapp.data.source.remote.SpaceFlightNewsApiService
 import com.vikination.spaceflightnewsapp.data.repositories.AuthRepositoryImpl
 import com.vikination.spaceflightnewsapp.data.repositories.RecentSearchRepositoryImpl
 import com.vikination.spaceflightnewsapp.data.repositories.SpaceFlightNewsRepositoryImpl
+import com.vikination.spaceflightnewsapp.data.source.local.dao.NewsDao
 import com.vikination.spaceflightnewsapp.domain.repositories.AuthRepository
 import com.vikination.spaceflightnewsapp.domain.repositories.RecentSearchRepository
 import com.vikination.spaceflightnewsapp.domain.repositories.SpaceFlightNewsRepository
@@ -34,8 +35,12 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideSpaceFlightNewsRepository(
-        spaceFlightNewsApiService: SpaceFlightNewsApiService
-    ): SpaceFlightNewsRepository = SpaceFlightNewsRepositoryImpl(spaceFlightNewsApiService)
+        spaceFlightNewsApiService: SpaceFlightNewsApiService,
+        newsDao: NewsDao
+    ): SpaceFlightNewsRepository = SpaceFlightNewsRepositoryImpl(
+        spaceFlightNewsApiService,
+        newsDao
+    )
 
     @Provides
     @Singleton

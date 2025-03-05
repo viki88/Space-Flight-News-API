@@ -1,4 +1,4 @@
-package com.vikination.spaceflightnewsapp.data.network
+package com.vikination.spaceflightnewsapp.data.source.remote
 
 import com.vikination.spaceflightnewsapp.ui.utils.Constants
 import retrofit2.Response
